@@ -30,10 +30,15 @@ html.dark * {
 /*
  * Tailwind v4's @theme directive is a valid project at-rule, but the default
  * CSS validator does not understand it. Disable the generic unknown-at-rule
- * check around this block so editor diagnostics stay focused on real issues.
+ * checks around this block so editor diagnostics stay focused on real issues.
+ *
+ * Several editors recognize either CSSLint or Stylelint directives, so we
+ * cover both forms here to suppress false positives from @theme.
  */
 /* csslint-disable */
+/* stylelint-disable at-rule-no-unknown */
 @theme inline {
+  --font-sans: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
@@ -75,6 +80,7 @@ html.dark * {
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
 }
+/* stylelint-enable at-rule-no-unknown */
 /* csslint-enable */
 
 :root {
@@ -157,6 +163,7 @@ html.dark * {
   body {
     background-color: #f4f7fc;
     color: var(--color-foreground);
+    font-family: var(--font-sans);
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
   }
 }
@@ -204,4 +211,33 @@ html.dark * {
 
 .animation-delay-4000 {
   animation-delay: 4s;
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+ 
+.animate-float {
+  animation: float 4s ease-in-out infinite;
+}
+ 
+@keyframes wave-bar {
+  0%,
+  100% {
+    transform: scaleY(0.5);
+  }
+  50% {
+    transform: scaleY(1);
+  }
+}
+ 
+.animate-wave-bar {
+  transform-origin: center;
+  animation: wave-bar 1s ease-in-out infinite;
 }

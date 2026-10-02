@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { SiteHeader, FloatingWhatsAppButton } from "../components/SiteHeader";
 import { HeroSection } from "../components/HeroSection";
@@ -38,11 +39,18 @@ export const Route = createFileRoute("/")({
 });
 
 function Index() {
+const [selectedAgentIndex, setSelectedAgentIndex] = useState(0); // Acquéreurs by default
+
   const scrollToBooking = () => {
     const el = document.getElementById("demo-booking");
     if (el) {
       el.scrollIntoView({ behavior: "smooth" });
     }
+  };
+
+  const selectAgentFromHero = (index: number) => {
+    setSelectedAgentIndex(index);
+    scrollToAgents();
   };
 
   const scrollToAgents = () => {
@@ -69,7 +77,7 @@ function Index() {
 
       {/* Main Content */}
       <main className="flex-grow pt-24 md:pt-32 relative z-10">
-        <HeroSection onBookDemo={scrollToBooking} onExploreAgents={scrollToAgents} />
+        <HeroSection onBookDemo={scrollToBooking} onExploreAgents={scrollToAgents} onSelectAgent={selectAgentFromHero} />
 
         {/* Video / Platform preview player */}
         <section className="pt-0 pb-8 md:pt-2 md:pb-12 relative z-10">
@@ -94,7 +102,7 @@ function Index() {
         <PartnersMarquee />
 
         {/* 7 Interactive Agents Showcase */}
-        <AgentsShowcase onBookDemo={scrollToBooking} />
+        <AgentsShowcase selectedIndex={selectedAgentIndex} onSelectIndex={setSelectedAgentIndex} onBookDemo={scrollToBooking} />
 
         {/* Founder Narrative (L'humain au cœur de l'automatisation) */}
         <FounderSection />

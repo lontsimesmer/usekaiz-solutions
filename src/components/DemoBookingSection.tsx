@@ -41,8 +41,9 @@ export function DemoBookingSection() {
             src={WIDGET_URL}
             title="Réservation de démonstration Usekaiz"
             className="w-full"
-            style={{ height: "760px", border: "none", minHeight: "680px" }}
+            style={{ height: "820px", border: "none", minHeight: "740px" }}
             loading="lazy"
+            scrolling="no"
             allow="clipboard-write; fullscreen"
           />
         </div>

@@ -22,13 +22,13 @@ export function SiteHeader({ onBookDemo }: HeaderProps) {
 
         {/* Desktop Nav matching usekaiz.com header exactly as in Image 1 & 2 */}
         <nav className="hidden lg:flex items-center gap-10 text-sm font-semibold text-slate-800">
-          <a href="#features" className="hover:text-purple-600 transition-colors">
+          <a href="#features" className="hover:text-primary transition-colors relative after:absolute after:bottom-[-4px] after:left-0 after:w-0 after:h-0.5 after:bg-primary hover:after:w-full after:transition-all after:duration-300">
             Fonctionnalités
           </a>
-          <a href="#agents-showcase" className="hover:text-purple-600 transition-colors">
+          <a href="#agents-showcase" className="hover:text-primary transition-colors relative after:absolute after:bottom-[-4px] after:left-0 after:w-0 after:h-0.5 after:bg-primary hover:after:w-full after:transition-all after:duration-300">
             Agents IA
           </a>
-          <a href="#cas-clients" className="hover:text-purple-600 transition-colors">
+          <a href="#cas-clients" className="hover:text-primary transition-colors relative after:absolute after:bottom-[-4px] after:left-0 after:w-0 after:h-0.5 after:bg-primary hover:after:w-full after:transition-all after:duration-300">
             Cas clients
           </a>
         </nav>
