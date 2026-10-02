@@ -12,17 +12,23 @@ import { AGENTS_LIST } from "../data/agents";
 interface HeroSectionProps {
   onBookDemo: () => void;
   onExploreAgents: () => void;
+onSelectAgent?: (index: number) => void;
 }
-
-export function HeroSection({ onBookDemo, onExploreAgents }: HeroSectionProps) {
+ 
+export function HeroSection({ onBookDemo, onExploreAgents, onSelectAgent }: HeroSectionProps) {
   return (
     <section className="relative pt-6 pb-8 md:pt-12 md:pb-16 overflow-hidden">
       <div className="container mx-auto px-4 relative z-10 flex flex-col items-center text-center">
         <div className="relative z-10 w-full max-w-6xl mx-auto">
           {/* Top Avatars Overlap Bar */}
           <div className="flex justify-center items-center -space-x-3 sm:-space-x-4 md:-space-x-5 mb-6 md:mb-8">
-            {AGENTS_LIST.map((agent) => (
-              <div key={agent.id} className="group relative cursor-pointer">
+            {AGENTS_LIST.map((agent, idx) => (
+              <button
+                key={agent.id}
+                type="button"
+                onClick={() => onSelectAgent?.(idx)}
+                className="group relative cursor-pointer outline-hidden"
+                aria-label={`Voir l'agent ${agent.name}`}>
                 <div className="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 transition-all duration-300 transform group-hover:scale-125 group-hover:-translate-y-2 group-hover:z-20 rounded-full overflow-hidden shadow-md border-2 border-primary/25 bg-white">
                   <img
                     src={agent.avatar}
@@ -35,7 +41,7 @@ export function HeroSection({ onBookDemo, onExploreAgents }: HeroSectionProps) {
                   {agent.name}
                   <div className="absolute -top-1 left-1/2 -translate-x-1/2 border-4 border-transparent border-b-foreground" />
                 </div>
-              </div>
+              </button>
             ))}
           </div>
 
@@ -49,7 +55,7 @@ export function HeroSection({ onBookDemo, onExploreAgents }: HeroSectionProps) {
           </div>
 
           {/* Main Title */}
-          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold tracking-tight text-foreground mb-4 md:mb-6 leading-[1.15] animate-fade-in-up [animation-delay:100ms] max-w-5xl mx-auto drop-shadow-sm">
+          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold tracking-tight text-foreground mb-4 md:mb-6 leading-[1] animate-fade-in-up [animation-delay:100ms] max-w-5xl mx-auto drop-shadow-sm">
             L'agence immobilière la plus réactive du marché, <br className="hidden lg:block" />
             <span className="text-primary relative inline-block">
               C'est la vôtre.

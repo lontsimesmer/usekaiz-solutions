@@ -1,35 +1,40 @@
-import { useState } from "react";
-import { AGENTS_LIST, type AgentData } from "../data/agents";
-import { ChevronLeft, ChevronRight, MessageSquare, Sparkles, Target } from "lucide-react";
+import { useState, useEffect } from "react";
+import { AGENTS_LIST } from "../data/agents";
+import { ChevronLeft, ChevronRight, MessageSquare } from "lucide-react";
 
 interface AgentsShowcaseProps {
-  onSelectAgent?: (agent: AgentData) => void;
+  selectedIndex: number;
+  onSelectIndex: (idx: number) => void;
   onBookDemo?: () => void;
 }
 
-export function AgentsShowcase({ onBookDemo }: AgentsShowcaseProps) {
-  const [selectedIndex, setSelectedIndex] = useState(1); // Acquéreurs by default as displayed in screenshot
+export function AgentsShowcase({ selectedIndex, onSelectIndex, onBookDemo }: AgentsShowcaseProps) {
   const [selectedResponse, setSelectedResponse] = useState<number | null>(null);
 
-  const activeAgent = AGENTS_LIST[selectedIndex] ?? AGENTS_LIST[0];
+  const activeAgent = (AGENTS_LIST[selectedIndex] ?? AGENTS_LIST[0]) as (typeof AGENTS_LIST)[number];
 
-  if (!activeAgent) {
-    return null;
-  }
+  // Autoplay: advance to the next agent every ~10s
+  useEffect(() => {
+    const timer = window.setTimeout(() => {
+      setSelectedResponse(null);
+      onSelectIndex((selectedIndex + 1) % AGENTS_LIST.length);
+    }, 10000);
+    return () => window.clearTimeout(timer);
+  }, [selectedIndex, onSelectIndex]);
 
   const handleNext = () => {
     setSelectedResponse(null);
-    setSelectedIndex((prev) => (prev + 1) % AGENTS_LIST.length);
+    onSelectIndex((selectedIndex + 1) % AGENTS_LIST.length);
   };
 
   const handlePrev = () => {
     setSelectedResponse(null);
-    setSelectedIndex((prev) => (prev - 1 + AGENTS_LIST.length) % AGENTS_LIST.length);
+    onSelectIndex((selectedIndex - 1 + AGENTS_LIST.length) % AGENTS_LIST.length);
   };
 
   const handleSelect = (idx: number) => {
     setSelectedResponse(null);
-    setSelectedIndex(idx);
+    onSelectIndex(idx);
   };
 
   return (
@@ -89,7 +94,7 @@ export function AgentsShowcase({ onBookDemo }: AgentsShowcaseProps) {
         </div>
 
         {/* Interactive Agent Card Showcase */}
-        <div className="max-w-6xl mx-auto relative mt-6">
+        <div className="max-w-8xl mx-auto relative mt-6">
           {/* Nav arrows */}
           <button
             onClick={handlePrev}
@@ -144,30 +149,29 @@ export function AgentsShowcase({ onBookDemo }: AgentsShowcaseProps) {
             </div>
 
             {/* Inner label: Testez une conversation type */}
-            <div className="pt-4 sm:pt-6 px-6 sm:px-10 lg:px-14 flex items-center justify-end">
-              <div className="inline-flex items-center gap-2 text-white/95 text-xs sm:text-sm font-semibold">
-                <MessageSquare className="w-4 h-4 text-white" />
-                <span>Testez une conversation type</span>
-              </div>
-            </div>
+            <div className="pt-4 sm:pt-6 px-6 sm:px-10 lg:px-14 flex items-center justify-end"></div>
 
             {/* Main content grid: Portrait & Chat box */}
-            <div className="px-6 sm:px-10 lg:px-14 pb-8 sm:pb-10 pt-2">
+            <div className="px-6 sm:px-10 lg:px-14 pb-0 pt-2">
               <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-end">
-                {/* Agent Realistic Cutout Portrait (standing upright, bottom aligned) */}
-                <div className="lg:col-span-5 flex flex-col items-center lg:items-start justify-end relative self-end">
-                  <div className="w-full max-w-[340px] sm:max-w-[420px] lg:max-w-none relative flex justify-center lg:justify-start">
+                {/* Agent Realistic Cutout Portrait (stretching directly to the bottom edge with 0 space underneath) */}
+                <div className="lg:col-span-5 flex flex-col items-center lg:items-start justify-end relative self-end h-full">
+                  <div className="w-full relative flex justify-center lg:justify-start items-end -mb-0">
                     <img
                       src={activeAgent.avatar}
                       alt={activeAgent.name}
-                      className="w-auto max-h-[440px] sm:max-h-[500px] object-contain object-bottom drop-shadow-2xl transition-all duration-300 pointer-events-none"
+                      className="w-auto max-w-[380px] sm:max-w-[440px] lg:max-w-[480px] h-[380px] sm:h-[480px] lg:h-[540px] xl:h-[580px] object-contain object-bottom drop-shadow-2xl transition-all duration-300 pointer-events-none block"
                     />
                   </div>
                 </div>
 
                 {/* Chat Preview / Simulator Card & CTA */}
-                <div className="lg:col-span-7 flex flex-col justify-end space-y-5 pb-2">
-                  <div className="bg-white rounded-3xl p-5 sm:p-7 shadow-2xl text-slate-800 space-y-4">
+                <div className="lg:col-span-7 flex flex-col justify-end space-y-5 pb-8 mb-8 sm:pb-10">
+                  <div className="text-lg font-bold mb-4 flex items-center gap-2">
+                    <MessageSquare className="w-4 h-4 text-white" />
+                    <span>Testez une conversation type</span>
+                  </div>
+                  <div className="relative bg-white rounded-3xl p-5 sm:p-7 shadow-2xl text-slate-800 space-y-4">
                     {/* Agent header inside white box */}
                     <div className="flex items-center gap-3">
                       <div className="relative">
@@ -187,28 +191,76 @@ export function AgentsShowcase({ onBookDemo }: AgentsShowcaseProps) {
                     </div>
 
                     {/* Agent prompt speech bubble */}
-                    <div className="bg-[#f8f9fc] rounded-2xl rounded-tl-sm p-4 text-xs sm:text-sm text-slate-700 font-normal leading-relaxed border border-slate-100">
+                    <div className="p-3 text-sm max-w-[85%] shadow-xs rounded-2xl bg-white text-gray-900 rounded-tl-none border border-gray-100">
                       {activeAgent.sampleQuestion}
                     </div>
 
-                    {/* Audio wave player simulator matching screenshots */}
-                    <div className="inline-flex items-center gap-3 px-4 py-2 rounded-full bg-[#f4f3ff] border border-purple-100 shadow-2xs">
-                      <div className="w-7 h-7 rounded-full bg-purple-600 text-white flex items-center justify-center shadow-xs">
-                        <svg viewBox="0 0 24 24" fill="currentColor" className="w-3.5 h-3.5 ml-0.5">
-                          <polygon points="6 3 20 12 6 21 6 3" />
-                        </svg>
+                    {/* Audio wave player simulator — sits directly below the speech bubble, extending out past the left edge like in the image */}
+                    <div className="flex justify-start my-1">
+                      <div className="-ml-10 sm:-ml-14 bg-white text-foreground px-5 sm:px-5 py-3 rounded-full shadow-lg border border-gray-100 flex items-center gap-3 sm:gap-4 animate-float z-20">
+                        <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="24"
+                            height="24"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            className="lucide lucide-play w-5 h-5 text-primary ml-1"
+                          >
+                            <polygon points="6 3 20 12 6 21 6 3" />
+                          </svg>
+                        </div>
+                        {/* Audio wave bars */}
+                        <div className="flex items-center gap-1 h-5">
+                          <span
+                            className="w-1.5 h-4 bg-primary rounded-full animate-pulse"
+                            style={{ animationDelay: "0ms" }}
+                          />
+                          <span
+                            className="w-1.5 h-6 bg-primary rounded-full animate-pulse"
+                            style={{ animationDelay: "100ms" }}
+                          />
+                          <span
+                            className="w-1.5 h-3 bg-primary rounded-full animate-pulse"
+                            style={{ animationDelay: "200ms" }}
+                          />
+                          <span
+                            className="w-1.5 h-7 bg-primary rounded-full animate-pulse"
+                            style={{ animationDelay: "300ms" }}
+                          />
+                          <span
+                            className="w-1.5 h-4 bg-primary rounded-full animate-pulse"
+                            style={{ animationDelay: "400ms" }}
+                          />
+                          <span
+                            className="w-1.5 h-8 bg-primary rounded-full animate-pulse"
+                            style={{ animationDelay: "500ms" }}
+                          />
+                          <span
+                            className="w-1.5 h-5 bg-primary rounded-full animate-pulse"
+                            style={{ animationDelay: "600ms" }}
+                          />
+                          <span
+                            className="w-1.5 h-3 bg-primary rounded-full animate-pulse"
+                            style={{ animationDelay: "700ms" }}
+                          />
+                          <span
+                            className="w-1.5 h-6 bg-primary rounded-full animate-pulse"
+                            style={{ animationDelay: "800ms" }}
+                          />
+                          <span
+                            className="w-1.5 h-4 bg-primary rounded-full animate-pulse"
+                            style={{ animationDelay: "900ms" }}
+                          />
+                        </div>
+                        <span className="text-[11px] text-slate-400 font-mono font-medium">
+                          0:12
+                        </span>
                       </div>
-                      {/* Audio wave bars */}
-                      <div className="flex items-center gap-1 h-5">
-                        <span className="w-1 h-3 bg-purple-600 rounded-full" />
-                        <span className="w-1 h-4 bg-purple-500 rounded-full" />
-                        <span className="w-1 h-2 bg-purple-400 rounded-full" />
-                        <span className="w-1 h-5 bg-purple-600 rounded-full" />
-                        <span className="w-1 h-3.5 bg-purple-500 rounded-full" />
-                        <span className="w-1 h-4 bg-purple-600 rounded-full" />
-                        <span className="w-1 h-2 bg-purple-400 rounded-full" />
-                      </div>
-                      <span className="text-[11px] text-slate-400 font-mono">0:12</span>
                     </div>
 
                     {/* Choice Pill Buttons */}
@@ -259,20 +311,6 @@ export function AgentsShowcase({ onBookDemo }: AgentsShowcaseProps) {
                     </span>
                   </div>
                 </div>
-              </div>
-
-              {/* Dots indicator */}
-              <div className="flex items-center justify-center gap-2 mt-6">
-                {AGENTS_LIST.map((_, i) => (
-                  <button
-                    key={i}
-                    onClick={() => handleSelect(i)}
-                    className={`h-2.5 rounded-full transition-all cursor-pointer ${
-                      i === selectedIndex ? "w-8 bg-white" : "w-2.5 bg-white/40 hover:bg-white/70"
-                    }`}
-                    aria-label={`Aller à l'agent ${i + 1}`}
-                  />
-                ))}
               </div>
             </div>
           </div>
