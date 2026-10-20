@@ -18,4 +18,7 @@ export default defineConfig({
     // nitro/vite builds from this
     server: { entry: "server" },
   },
+  // Build for Vercel (outputs .vercel/output). Inside the Vibe sandbox the
+  // package still forces the cloudflare-module preset.
+  nitro: { preset: "vercel" },
 });

@@ -31,3 +31,5 @@ src/tailwind.config.vibe.json
 *.njsproj
 *.sln
 *.sw?
+
+.vercel
