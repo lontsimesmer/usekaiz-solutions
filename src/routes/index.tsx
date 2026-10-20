@@ -5,6 +5,7 @@ import { HeroSection } from "../components/HeroSection";
 import { PartnersMarquee } from "../components/PartnersMarquee";
 import { AgentsShowcase } from "../components/AgentsShowcase";
 import { FounderSection } from "../components/FounderSection";
+import { StatsCountersSection } from "../components/StatsCountersSection";
 import { FeaturesSection } from "../components/FeaturesSection";
 import { PlatformComparison } from "../components/PlatformComparison";
 import { DashboardPreview } from "../components/DashboardPreview";
@@ -106,6 +107,8 @@ const [selectedAgentIndex, setSelectedAgentIndex] = useState(0); // Acquéreurs 
 
         {/* Founder Narrative (L'humain au cœur de l'automatisation) */}
         <FounderSection />
+
+        <StatsCountersSection />
 
         {/* Features & ROI Gains */}
         <FeaturesSection onBookDemo={scrollToBooking} />

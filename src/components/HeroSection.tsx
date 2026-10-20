@@ -17,11 +17,11 @@ onSelectAgent?: (index: number) => void;
  
 export function HeroSection({ onBookDemo, onExploreAgents, onSelectAgent }: HeroSectionProps) {
   return (
-    <section className="relative pt-6 pb-8 md:pt-12 md:pb-16 overflow-hidden">
+    <section className="relative pt-4 pb-8 md:pt-6 md:pb-16 overflow-hidden">
       <div className="container mx-auto px-4 relative z-10 flex flex-col items-center text-center">
         <div className="relative z-10 w-full max-w-6xl mx-auto">
           {/* Top Avatars Overlap Bar */}
-          <div className="flex justify-center items-center -space-x-3 sm:-space-x-4 md:-space-x-5 mb-6 md:mb-8">
+          <div className="flex justify-center items-center -space-x-3 sm:-space-x-4 md:-space-x-5 mb-10 md:mb-20">
             {AGENTS_LIST.map((agent, idx) => (
               <button
                 key={agent.id}

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, type MouseEvent } from "react";
 import { ArrowRight, Clock, PhoneCall, Zap, MessageSquare, Check, X } from "lucide-react";
 
 interface FeaturesProps {
@@ -17,37 +17,25 @@ export function FeaturesSection({ onBookDemo }: FeaturesProps) {
     return () => clearTimeout(timer);
   }, []);
 
-  return (
-    <section id="features" className="py-12 md:py-20 relative z-10">
-      <div className="container mx-auto px-4 max-w-6xl">
-        {/* Top 3 Stat Counters Bar as seen in Image 5: 15k | 3h30 | 98% */}
-        <div className="bg-white/80 backdrop-blur-md rounded-3xl border border-primary/20 shadow-xl p-6 sm:p-8 mb-16 md:mb-24 grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-border">
-          <div className="text-center py-4 md:py-0 px-4">
-            <div className="text-4xl sm:text-5xl font-black text-primary tracking-tight mb-1">
-              15k
-            </div>
-            <p className="text-xs sm:text-sm font-semibold text-muted-foreground">
-              Leads qualifiés/mois
-            </p>
-          </div>
-          <div className="text-center py-4 md:py-0 px-4">
-            <div className="text-4xl sm:text-5xl font-black text-primary tracking-tight mb-1">
-              3h30
-            </div>
-            <p className="text-xs sm:text-sm font-semibold text-muted-foreground">
-              Gagnées par jour
-            </p>
-          </div>
-          <div className="text-center py-4 md:py-0 px-4">
-            <div className="text-4xl sm:text-5xl font-black text-emerald-500 tracking-tight mb-1">
-              98%
-            </div>
-            <p className="text-xs sm:text-sm font-semibold text-muted-foreground">
-              Taux d'ouverture
-            </p>
-          </div>
-        </div>
+  const handleSummaryCardMouseMove = (event: MouseEvent<HTMLDivElement>) => {
+    const bounds = event.currentTarget.getBoundingClientRect();
+    const pointerX = Math.max(0, Math.min(1, (event.clientX - bounds.left) / bounds.width));
+    const pointerY = Math.max(0, Math.min(1, (event.clientY - bounds.top) / bounds.height));
 
+    event.currentTarget.style.setProperty("--card-rotate-x", `${(0.5 - pointerY) * 10}deg`);
+    event.currentTarget.style.setProperty("--card-rotate-y", `${(pointerX - 0.5) * 10}deg`);
+    event.currentTarget.style.setProperty("--card-rotate-z", `${(pointerX - 0.5) * 4}deg`);
+  };
+
+  const handleSummaryCardMouseLeave = (event: MouseEvent<HTMLDivElement>) => {
+    event.currentTarget.style.removeProperty("--card-rotate-x");
+    event.currentTarget.style.removeProperty("--card-rotate-y");
+    event.currentTarget.style.removeProperty("--card-rotate-z");
+  };
+
+  return (
+    <section id="features" className="py-10 md:py-16 relative z-10 overflow-hidden bg-white/40">
+      <div className="container mx-auto px-4">
         {/* Section Header (Image 5 exact text) */}
         <div className="text-center max-w-4xl mx-auto mb-16">
           <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-5xl font-black text-foreground tracking-tight mb-5 leading-tight">
@@ -64,45 +52,63 @@ export function FeaturesSection({ onBookDemo }: FeaturesProps) {
         {/* 3 cards: Pain points & Usekaiz solution (Image 5) */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-20 md:mb-28">
           {/* Card 1: Temps perdu */}
-          <div className="bg-white rounded-3xl p-7 md:p-8 shadow-md hover:shadow-xl border border-border/80 transition-all flex flex-col justify-between">
-            <div>
-              <div className="w-12 h-12 rounded-2xl bg-rose-50 text-rose-500 flex items-center justify-center font-bold mb-6">
-                <Clock className="w-6 h-6" />
+          <div
+            className="feature-summary-card-wrapper"
+            onMouseMove={handleSummaryCardMouseMove}
+            onMouseLeave={handleSummaryCardMouseLeave}
+          >
+            <div className="feature-summary-card bg-white rounded-3xl p-7 md:p-8 shadow-md border-2 border-transparent flex flex-col justify-between">
+              <div>
+                <div className="w-12 h-12 rounded-2xl bg-rose-50 text-rose-500 flex items-center justify-center font-bold mb-6">
+                  <Clock className="w-6 h-6" />
+                </div>
+                <h3 className="font-extrabold text-xl text-foreground mb-3">Temps perdu</h3>
+                <p className="text-sm text-muted-foreground leading-relaxed">
+                  Des heures passées à qualifier des contacts froids au lieu de visiter et signer.
+                </p>
               </div>
-              <h3 className="font-extrabold text-xl text-foreground mb-3">Temps perdu</h3>
-              <p className="text-sm text-muted-foreground leading-relaxed">
-                Des heures passées à qualifier des contacts froids au lieu de visiter et signer.
-              </p>
             </div>
           </div>
 
           {/* Card 2: Relances oubliées */}
-          <div className="bg-white rounded-3xl p-7 md:p-8 shadow-md hover:shadow-xl border border-border/80 transition-all flex flex-col justify-between">
-            <div>
-              <div className="w-12 h-12 rounded-2xl bg-rose-50 text-rose-500 flex items-center justify-center font-bold mb-6">
-                <PhoneCall className="w-6 h-6" />
+          <div
+            className="feature-summary-card-wrapper"
+            onMouseMove={handleSummaryCardMouseMove}
+            onMouseLeave={handleSummaryCardMouseLeave}
+          >
+            <div className="feature-summary-card bg-white rounded-3xl p-7 md:p-8 shadow-md border-2 border-transparent flex flex-col justify-between">
+              <div>
+                <div className="w-12 h-12 rounded-2xl bg-rose-50 text-rose-500 flex items-center justify-center font-bold mb-6">
+                  <PhoneCall className="w-6 h-6" />
+                </div>
+                <h3 className="font-extrabold text-xl text-foreground mb-3">Relances oubliées</h3>
+                <p className="text-sm text-muted-foreground leading-relaxed">
+                  Des prospects qui vous échappent car vous ne pouvez pas être partout à la fois.
+                </p>
               </div>
-              <h3 className="font-extrabold text-xl text-foreground mb-3">Relances oubliées</h3>
-              <p className="text-sm text-muted-foreground leading-relaxed">
-                Des prospects qui vous échappent car vous ne pouvez pas être partout à la fois.
-              </p>
             </div>
           </div>
 
           {/* Card 3: La solution Usekaiz */}
-          <div className="bg-white rounded-3xl p-7 md:p-8 shadow-md hover:shadow-xl border border-purple-200 transition-all flex flex-col justify-between relative overflow-hidden group">
-            <div className="absolute top-4 right-4 text-purple-400">
-              <Zap className="w-5 h-5 fill-purple-200 text-primary" />
-            </div>
-            <div>
-              <div className="w-12 h-12 rounded-2xl bg-purple-100 text-primary flex items-center justify-center font-bold mb-6">
-                <Zap className="w-6 h-6 fill-primary" />
+          <div
+            className="feature-summary-card-wrapper"
+            onMouseMove={handleSummaryCardMouseMove}
+            onMouseLeave={handleSummaryCardMouseLeave}
+          >
+            <div className="feature-summary-card bg-white rounded-3xl p-7 md:p-8 shadow-md border-2 border-purple-200 flex flex-col justify-between relative overflow-hidden group">
+              <div className="absolute top-4 right-4 text-purple-400">
+                <Zap className="w-5 h-5 fill-purple-200 text-primary" />
               </div>
-              <h3 className="font-extrabold text-xl text-primary mb-3">La solution Usekaiz</h3>
-              <p className="text-sm text-muted-foreground leading-relaxed">
-                Laissez nos agents IA s'occuper du travail chronophage. Concentrez-vous sur
-                l'humain.
-              </p>
+              <div>
+                <div className="w-12 h-12 rounded-2xl bg-purple-100 text-primary flex items-center justify-center font-bold mb-6">
+                  <Zap className="w-6 h-6 fill-primary" />
+                </div>
+                <h3 className="font-extrabold text-xl text-primary mb-3">La solution Usekaiz</h3>
+                <p className="text-sm text-muted-foreground leading-relaxed">
+                  Laissez nos agents IA s'occuper du travail chronophage. Concentrez-vous sur
+                  l'humain.
+                </p>
+              </div>
             </div>
           </div>
         </div>
@@ -134,8 +140,12 @@ export function FeaturesSection({ onBookDemo }: FeaturesProps) {
           </div>
 
           {/* Interactive Card: Campagne Active (Image 1) */}
-          <div className="lg:col-span-6">
-            <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-2xl border border-border/80 relative overflow-hidden">
+          <div
+            className="lg:col-span-6 flex-1 order-1 md:order-2 relative feature-summary-card-wrapper"
+            onMouseMove={handleSummaryCardMouseMove}
+            onMouseLeave={handleSummaryCardMouseLeave}
+          >
+            <div className="feature-summary-card feature-summary-card-tilted bg-white p-8 rounded-3xl shadow-2xl border-2 border-border/80 relative overflow-hidden">
               <div className="flex items-center gap-3.5 mb-6">
                 <div className="w-12 h-12 rounded-full bg-purple-100 text-primary flex items-center justify-center font-bold shadow-inner">
                   <div className="w-7 h-7 rounded-full border-2 border-primary flex items-center justify-center">
@@ -170,23 +180,29 @@ export function FeaturesSection({ onBookDemo }: FeaturesProps) {
         {/* Feature 2 Deep-Dive: Qualification intelligente des leads (Image 1 bottom) */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
           {/* Left card: Lead scores preview */}
-          <div className="lg:col-span-6 order-2 lg:order-1 space-y-3.5">
-            <div className="bg-white rounded-2xl p-5 shadow-lg border border-purple-200">
-              <div className="bg-purple-100/70 text-primary px-3.5 py-1.5 rounded-lg text-xs font-black inline-block mb-2">
-                Score du lead : 95/100
+          <div
+            className="lg:col-span-6 order-2 lg:order-1 flex-1 relative feature-summary-card-wrapper"
+            onMouseMove={handleSummaryCardMouseMove}
+            onMouseLeave={handleSummaryCardMouseLeave}
+          >
+            <div className="feature-summary-card feature-summary-card-negative-tilt bg-white p-8 rounded-3xl border-2 border-transparent space-y-3.5">
+              <div className="bg-white rounded-2xl p-5 shadow-lg border border-purple-200">
+                <div className="bg-purple-100/70 text-primary px-3.5 py-1.5 rounded-lg text-xs font-black inline-block mb-2">
+                  Score du lead : 95/100
+                </div>
+                <p className="text-xs sm:text-sm font-semibold text-foreground">
+                  Projet d'achat validé. Financement accordé. Recherche active.
+                </p>
               </div>
-              <p className="text-xs sm:text-sm font-semibold text-foreground">
-                Projet d'achat validé. Financement accordé. Recherche active.
-              </p>
-            </div>
 
-            <div className="bg-white/80 rounded-2xl p-5 shadow-sm border border-border/70 opacity-70">
-              <div className="bg-slate-100 text-muted-foreground px-3.5 py-1.5 rounded-lg text-xs font-bold inline-block mb-2">
-                Score du lead : 40/100
+              <div className="bg-white/80 rounded-2xl p-5 shadow-sm border border-border/70 opacity-70">
+                <div className="bg-slate-100 text-muted-foreground px-3.5 py-1.5 rounded-lg text-xs font-bold inline-block mb-2">
+                  Score du lead : 40/100
+                </div>
+                <p className="text-xs sm:text-sm text-muted-foreground">
+                  Curieux. Pas de financement. Projet à 12 mois.
+                </p>
               </div>
-              <p className="text-xs sm:text-sm text-muted-foreground">
-                Curieux. Pas de financement. Projet à 12 mois.
-              </p>
             </div>
           </div>
 

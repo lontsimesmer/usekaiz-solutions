@@ -1,5 +1,5 @@
-import { useState, useEffect } from "react";
-import { AGENTS_LIST } from "../data/agents";
+import { useState, useEffect, useRef } from "react";
+import { AGENTS_LIST, type AgentData } from "../data/agents";
 import { ChevronLeft, ChevronRight, MessageSquare } from "lucide-react";
 
 interface AgentsShowcaseProps {
@@ -9,31 +9,32 @@ interface AgentsShowcaseProps {
 }
 
 export function AgentsShowcase({ selectedIndex, onSelectIndex, onBookDemo }: AgentsShowcaseProps) {
-  const [selectedResponse, setSelectedResponse] = useState<number | null>(null);
+  const [lastInteraction, setLastInteraction] = useState<number | null>(null);
 
-  const activeAgent = (AGENTS_LIST[selectedIndex] ?? AGENTS_LIST[0]) as (typeof AGENTS_LIST)[number];
+  const activeAgent = (AGENTS_LIST[selectedIndex] ??
+    AGENTS_LIST[0]) as (typeof AGENTS_LIST)[number];
 
-  // Autoplay: advance to the next agent every ~10s
+  // Autoplay: advance to the next agent every ~10s, giving more time once the visitor interacts
   useEffect(() => {
-    const timer = window.setTimeout(() => {
-      setSelectedResponse(null);
-      onSelectIndex((selectedIndex + 1) % AGENTS_LIST.length);
-    }, 10000);
+    const timer = window.setTimeout(
+      () => onSelectIndex((selectedIndex + 1) % AGENTS_LIST.length),
+      lastInteraction ? 15000 : 10000,
+    );
     return () => window.clearTimeout(timer);
-  }, [selectedIndex, onSelectIndex]);
+  }, [selectedIndex, onSelectIndex, lastInteraction]);
 
   const handleNext = () => {
-    setSelectedResponse(null);
+    setLastInteraction(null);
     onSelectIndex((selectedIndex + 1) % AGENTS_LIST.length);
   };
 
   const handlePrev = () => {
-    setSelectedResponse(null);
+    setLastInteraction(null);
     onSelectIndex((selectedIndex - 1 + AGENTS_LIST.length) % AGENTS_LIST.length);
   };
 
   const handleSelect = (idx: number) => {
-    setSelectedResponse(null);
+    setLastInteraction(null);
     onSelectIndex(idx);
   };
 
@@ -171,131 +172,11 @@ export function AgentsShowcase({ selectedIndex, onSelectIndex, onBookDemo }: Age
                     <MessageSquare className="w-4 h-4 text-white" />
                     <span>Testez une conversation type</span>
                   </div>
-                  <div className="relative bg-white rounded-3xl p-5 sm:p-7 shadow-2xl text-slate-800 space-y-4">
-                    {/* Agent header inside white box */}
-                    <div className="flex items-center gap-3">
-                      <div className="relative">
-                        <img
-                          src={activeAgent.avatar}
-                          alt={activeAgent.name}
-                          className="w-10 h-10 rounded-full object-cover border border-slate-100 shadow-sm"
-                        />
-                        <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 absolute bottom-0 right-0 ring-2 ring-white" />
-                      </div>
-                      <div>
-                        <div className="font-bold text-sm text-slate-900 leading-tight">
-                          {activeAgent.name}
-                        </div>
-                        <div className="text-[11px] text-slate-400 font-medium">En ligne</div>
-                      </div>
-                    </div>
-
-                    {/* Agent prompt speech bubble */}
-                    <div className="p-3 text-sm max-w-[85%] shadow-xs rounded-2xl bg-white text-gray-900 rounded-tl-none border border-gray-100">
-                      {activeAgent.sampleQuestion}
-                    </div>
-
-                    {/* Audio wave player simulator — sits directly below the speech bubble, extending out past the left edge like in the image */}
-                    <div className="flex justify-start my-1">
-                      <div className="-ml-10 sm:-ml-14 bg-white text-foreground px-5 sm:px-5 py-3 rounded-full shadow-lg border border-gray-100 flex items-center gap-3 sm:gap-4 animate-float z-20">
-                        <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="24"
-                            height="24"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            className="lucide lucide-play w-5 h-5 text-primary ml-1"
-                          >
-                            <polygon points="6 3 20 12 6 21 6 3" />
-                          </svg>
-                        </div>
-                        {/* Audio wave bars */}
-                        <div className="flex items-center gap-1 h-5">
-                          <span
-                            className="w-1.5 h-4 bg-primary rounded-full animate-pulse"
-                            style={{ animationDelay: "0ms" }}
-                          />
-                          <span
-                            className="w-1.5 h-6 bg-primary rounded-full animate-pulse"
-                            style={{ animationDelay: "100ms" }}
-                          />
-                          <span
-                            className="w-1.5 h-3 bg-primary rounded-full animate-pulse"
-                            style={{ animationDelay: "200ms" }}
-                          />
-                          <span
-                            className="w-1.5 h-7 bg-primary rounded-full animate-pulse"
-                            style={{ animationDelay: "300ms" }}
-                          />
-                          <span
-                            className="w-1.5 h-4 bg-primary rounded-full animate-pulse"
-                            style={{ animationDelay: "400ms" }}
-                          />
-                          <span
-                            className="w-1.5 h-8 bg-primary rounded-full animate-pulse"
-                            style={{ animationDelay: "500ms" }}
-                          />
-                          <span
-                            className="w-1.5 h-5 bg-primary rounded-full animate-pulse"
-                            style={{ animationDelay: "600ms" }}
-                          />
-                          <span
-                            className="w-1.5 h-3 bg-primary rounded-full animate-pulse"
-                            style={{ animationDelay: "700ms" }}
-                          />
-                          <span
-                            className="w-1.5 h-6 bg-primary rounded-full animate-pulse"
-                            style={{ animationDelay: "800ms" }}
-                          />
-                          <span
-                            className="w-1.5 h-4 bg-primary rounded-full animate-pulse"
-                            style={{ animationDelay: "900ms" }}
-                          />
-                        </div>
-                        <span className="text-[11px] text-slate-400 font-mono font-medium">
-                          0:12
-                        </span>
-                      </div>
-                    </div>
-
-                    {/* Choice Pill Buttons */}
-                    <div className="space-y-2 pt-2">
-                      <button
-                        type="button"
-                        onClick={() => setSelectedResponse(1)}
-                        className={`w-full text-left px-4 py-3 rounded-2xl border text-xs sm:text-sm font-semibold transition-all cursor-pointer ${
-                          selectedResponse === 1
-                            ? "bg-[#6016ec] text-white border-[#6016ec] shadow-sm"
-                            : "bg-[#f3edff] hover:bg-[#ebe1ff] text-[#6016ec] border-[#e4d4ff]"
-                        }`}
-                      >
-                        {activeAgent.sampleAnswer1}
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => setSelectedResponse(2)}
-                        className={`w-full text-left px-4 py-3 rounded-2xl border text-xs sm:text-sm font-semibold transition-all cursor-pointer ${
-                          selectedResponse === 2
-                            ? "bg-[#6016ec] text-white border-[#6016ec] shadow-sm"
-                            : "bg-[#f3edff] hover:bg-[#ebe1ff] text-[#6016ec] border-[#e4d4ff]"
-                        }`}
-                      >
-                        {activeAgent.sampleAnswer2}
-                      </button>
-                    </div>
-
-                    {/* Agent Live Reaction if clicked */}
-                    {selectedResponse && (
-                      <div className="p-3.5 rounded-2xl bg-emerald-50 border border-emerald-200/80 text-xs sm:text-sm text-emerald-950 font-medium animate-in fade-in slide-in-from-bottom-2">
-                        {selectedResponse === 1 ? activeAgent.agentReply1 : activeAgent.agentReply2}
-                      </div>
-                    )}
-                  </div>
+                  <ChatSimulator
+                    key={activeAgent.id}
+                    agent={activeAgent}
+                    onInteract={() => setLastInteraction(Date.now())}
+                  />
 
                   {/* White CTA button below chat box matching screenshots */}
                   <div className="flex items-center justify-between">
@@ -317,5 +198,167 @@ export function AgentsShowcase({ selectedIndex, onSelectIndex, onBookDemo }: Age
         </div>
       </div>
     </section>
+  );
+}
+
+type ChatMessage = { id: number; from: "agent" | "user"; text: string };
+
+const WAVE_BARS = [
+  { h: "h-4", tone: "bg-primary" },
+  { h: "h-6", tone: "bg-primary" },
+  { h: "h-3", tone: "bg-primary/60" },
+  { h: "h-7", tone: "bg-primary" },
+  { h: "h-4", tone: "bg-primary" },
+  { h: "h-8", tone: "bg-primary" },
+  { h: "h-5", tone: "bg-primary" },
+  { h: "h-3", tone: "bg-primary/60" },
+  { h: "h-6", tone: "bg-primary" },
+  { h: "h-4", tone: "bg-primary/60" },
+];
+
+const REPLY_DELAY = 1400;
+
+// Simulated WhatsApp-style conversation. The agent's question and both answers are shown
+// straight away; clicking an answer adds the visitor's bubble then the agent's reply. Only the
+// message thread scrolls — the voice note and the answers never move.
+function ChatSimulator({ agent, onInteract }: { agent: AgentData; onInteract: () => void }) {
+  const [messages, setMessages] = useState<ChatMessage[]>([
+    { id: 0, from: "agent", text: agent.sampleQuestion },
+  ]);
+  const [typing, setTyping] = useState(false);
+  const timer = useRef<number | null>(null);
+  const nextId = useRef(1);
+  const threadRef = useRef<HTMLDivElement>(null);
+
+  const push = (from: ChatMessage["from"], text: string) =>
+    setMessages((prev) => [...prev, { id: nextId.current++, from, text }]);
+
+  const answer = (choice: 1 | 2) => {
+    if (typing) return;
+    onInteract();
+    push("user", choice === 1 ? agent.sampleAnswer1 : agent.sampleAnswer2);
+    setTyping(true);
+    timer.current = window.setTimeout(() => {
+      setTyping(false);
+      push("agent", choice === 1 ? agent.agentReply1 : agent.agentReply2);
+    }, REPLY_DELAY);
+  };
+
+  useEffect(
+    () => () => {
+      if (timer.current) window.clearTimeout(timer.current);
+    },
+    [],
+  );
+
+  // Keep the latest message in view without scrolling the page itself
+  useEffect(() => {
+    const el = threadRef.current;
+    if (el) el.scrollTo({ top: el.scrollHeight, behavior: "smooth" });
+  }, [messages, typing]);
+
+  return (
+    <div className="relative h-[380px] flex flex-col bg-white rounded-3xl shadow-2xl text-slate-800">
+      {/* Header */}
+      <div className="shrink-0 flex items-center gap-3 px-5 py-3.5 bg-slate-50 border-b border-slate-100 rounded-t-3xl">
+        <div className="relative shrink-0">
+          <img
+            src={agent.avatar}
+            alt={agent.name}
+            className="w-10 h-10 rounded-full object-cover object-top border-2 border-primary/30"
+          />
+          <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 absolute bottom-0 right-0 ring-2 ring-white" />
+        </div>
+        <div>
+          <div className="font-bold text-sm text-slate-900 leading-tight">{agent.name}</div>
+          <div className="text-[11px] text-slate-400 font-medium">En ligne</div>
+        </div>
+      </div>
+
+      <div className="relative flex-1 min-h-0 flex flex-col bg-slate-50/40">
+        {/* Message thread — fills the fixed-height card and scrolls; the bottom padding reserves
+            the spot where the voice note floats so the newest bubble sits right above it */}
+        <div
+          ref={threadRef}
+          className="flex-1 min-h-0 overflow-y-auto px-5 pt-4 pb-[92px] flex flex-col"
+        >
+          <div className="mt-4 flex flex-col gap-2.5">
+            {messages.map((m) =>
+              m.from === "agent" ? (
+                <div
+                  key={m.id}
+                  className="relative self-start max-w-[85%] px-4 py-2.5 text-sm leading-snug rounded-[20px] rounded-bl-[6px] bg-white text-slate-900 border border-slate-100 shadow-sm animate-in fade-in slide-in-from-bottom-2"
+                >
+                  {m.text}
+                </div>
+              ) : (
+                <div
+                  key={m.id}
+                  className="self-end max-w-[80%] px-4 py-2.5 text-sm font-medium leading-snug rounded-[20px] rounded-br-[6px] bg-primary text-white shadow-sm animate-in fade-in slide-in-from-bottom-2"
+                >
+                  {m.text}
+                </div>
+              ),
+            )}
+
+            {typing && (
+              <div className="self-start inline-flex items-center gap-1 px-4 py-3 rounded-[20px] rounded-bl-[6px] bg-white border border-slate-100 shadow-sm">
+                {[0, 150, 300].map((delay) => (
+                  <span
+                    key={delay}
+                    className="w-1.5 h-1.5 rounded-full bg-slate-400 animate-bounce"
+                    style={{ animationDelay: `${delay}ms` }}
+                  />
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Voice note pill — floats on top of the card (out of the layout), overhanging its left edge */}
+        <div className="absolute bottom-3.5 left-5 -ml-10 sm:-ml-14 z-20 animate-float pointer-events-none">
+          <div className="bg-white px-5 py-3 rounded-full shadow-lg border border-gray-100 flex items-center gap-3 sm:gap-4">
+            <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="w-5 h-5 text-primary ml-1"
+              >
+                <polygon points="6 3 20 12 6 21 6 3" />
+              </svg>
+            </div>
+            <div className="flex items-center gap-1 h-5">
+              {WAVE_BARS.map((bar, i) => (
+                <span
+                  key={i}
+                  className={`w-1.5 ${bar.h} ${bar.tone} rounded-full animate-pulse`}
+                  style={{ animationDelay: `${i * 100}ms` }}
+                />
+              ))}
+            </div>
+            <span className="text-[11px] text-slate-400 font-mono font-medium">0:12</span>
+          </div>
+        </div>
+      </div>
+
+      {/* Answer choices — always visible, directly under the voice note */}
+      <div className="shrink-0 px-5 pt-2.5 pb-4 bg-slate-50/40 rounded-b-3xl space-y-2">
+        {([1, 2] as const).map((choice) => (
+          <button
+            key={choice}
+            type="button"
+            onClick={() => answer(choice)}
+            disabled={typing}
+            className="w-full text-left truncate px-4 py-2.5 rounded-xl border border-primary/30 bg-primary/10 hover:bg-primary/15 text-primary text-xs sm:text-sm font-bold transition-colors cursor-pointer disabled:cursor-wait"
+          >
+            {choice === 1 ? agent.sampleAnswer1 : agent.sampleAnswer2}
+          </button>
+        ))}
+      </div>
+    </div>
   );
 }

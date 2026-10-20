@@ -1,6 +1,6 @@
 import { Zap, Sliders, HelpCircle, Calendar as CalendarIcon } from "lucide-react";
 
-const WIDGET_URL = "https://api.leadconnectorhq.com/widget/bookings/usekaiz-solution";
+const WIDGET_URL = "https://api.leadconnectorhq.com/widget/bookings/usekaiz-soln";
 
 export function DemoBookingSection() {
   return (

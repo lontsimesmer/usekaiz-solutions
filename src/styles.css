@@ -226,6 +226,57 @@ html.dark * {
 .animate-float {
   animation: float 4s ease-in-out infinite;
 }
+
+.feature-summary-card-wrapper {
+  perspective: 1000px;
+}
+
+.feature-summary-card {
+  transform: perspective(1000px) rotateX(var(--card-rotate-x, 0deg))
+    rotateY(var(--card-rotate-y, 0deg))
+    rotateZ(calc(var(--card-base-rotate, 0deg) + var(--card-rotate-z, 0deg)));
+  transition:
+    transform 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+    background-color 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+    border-color 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+    box-shadow 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.feature-summary-card-wrapper:hover .feature-summary-card {
+  transform: perspective(1000px) rotateX(var(--card-rotate-x, 0deg))
+    rotateY(var(--card-rotate-y, 0deg))
+    rotateZ(calc(var(--card-base-rotate, 0deg) + var(--card-rotate-z, 0deg))) translateY(-14px);
+}
+
+.feature-summary-card-wrapper:hover .feature-summary-card {
+  background-color: rgb(255 255 255 / 90%);
+  border-color: rgb(99 26 234 / 80%);
+  box-shadow: 0 30px 60px -15px rgb(96 22 236 / 25%);
+}
+
+.feature-summary-card-tilted {
+  --card-base-rotate: 2deg;
+}
+
+.feature-summary-card-negative-tilt {
+  --card-base-rotate: -2deg;
+}
+
+.card-3d-wrapper {
+  perspective: 1000px;
+}
+
+.card-3d-wrapper .card-3d {
+  transform-style: preserve-3d;
+  transition:
+    transform 300ms ease,
+    rotate 300ms ease;
+}
+
+.card-3d-wrapper:hover .card-3d {
+  transform: translateY(-4px);
+  rotate: 0deg;
+}
  
 @keyframes wave-bar {
   0%,
