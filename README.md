@@ -3,7 +3,7 @@
 > Le logiciel d'IA n°1 pour les agents et mandataires immobiliers en France.
 > Automatisez la prospection, la pige, la qualification et la prise de rendez-vous 24h/24.
 
-🔗 **Déploiement en ligne :** [https://usekaiz-solutions.vibepreview.app/](https://usekaiz-solutions.vibepreview.app/)
+🔗 **Déploiement en ligne :** [https://usekaiz-solutions.vercel.app/](https://usekaiz-solutions.vercel.app/)
 
 ---
 
@@ -97,7 +97,7 @@ L'application est ensuite accessible sur le serveur de développement local.
 
 Le site est déployé et accessible publiquement à l'adresse suivante:
 
-**👉 [https://usekaiz-solutions.vibepreview.app/](https://usekaiz-solutions.vibepreview.app/)**
+**👉 [https://usekaiz-solutions.vercel.app/](https://usekaiz-solutions.vercel.app/)**
 
 ---
 
